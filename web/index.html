@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyTruckMovers</title>
+  <meta name="theme-color" content="#1c2333">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- HOME (public landing page) -->
+  <section id="landing" class="landing hidden">
+    <nav class="lnav">
+      <div class="brand"><img class="logo" src="assets/logo.png" alt=""> MyTruckMovers</div>
+      <div class="lnav-actions">
+        <button class="btn ghost light" data-go="login">Log in</button>
+        <button class="btn primary" data-go="register">Get started</button>
+      </div>
+    </nav>
+    <div class="hero">
+      <div class="hero-text">
+        <h1>Move anything. <span>Track it live.</span></h1>
+        <p>Request a truck in seconds, see the price up front, and follow your driver on the map all the way to the destination.</p>
+        <div class="hero-actions">
+          <button class="btn primary big" data-go="register"><i data-i="package"></i> Request a truck</button>
+          <button class="btn ghost light big" data-go="register-driver"><i data-i="truck"></i> Drive with us</button>
+        </div>
+      </div>
+<!--      <div class="hero-art"><img src="assets/logo.png" alt="MyTruckMovers"></div>-->
+    </div>
+    <div class="features">
+      <div class="feature"><i data-i="map-pin"></i><h3>Pin your destination</h3><p>Drop a pin on the map and see the price before you send the request.</p></div>
+      <div class="feature"><i data-i="truck"></i><h3>Right truck for the job</h3><p>Choose from pickup to large lorry. See available trucks around you.</p></div>
+      <div class="feature"><i data-i="route"></i><h3>Live route and ETA</h3><p>Follow the truck on the map with the time remaining until it arrives.</p></div>
+      <div class="feature"><i data-i="shield"></i><h3>Verified drivers</h3><p>Drivers register with their ID, passport photo and truck details.</p></div>
+    </div>
+    <div class="steps">
+      <h2>How it works</h2>
+      <div class="steps-row">
+        <div class="step"><span>1</span><p>Choose a truck size and pin where it is going.</p></div>
+        <div class="step"><span>2</span><p>A nearby driver accepts. You see their name and phone.</p></div>
+        <div class="step"><span>3</span><p>Track the truck live until your items are delivered.</p></div>
+      </div>
+    </div>
+    <footer class="lfoot">MyTruckMovers</footer>
+  </section>
+
+  <!-- AUTH -->
+  <section id="auth" class="auth hidden">
+    <div class="card auth-card">
+      <button id="backHome" class="linkbtn"><i data-i="arrow-left"></i> Home</button>
+      <h1><img class="logo" src="assets/logo.png" alt=""> MyTruckMovers</h1>
+      <div class="tabs">
+        <button id="tabLogin" class="tab active">Log in</button>
+        <button id="tabRegister" class="tab">Register</button>
+      </div>
+      <form id="authForm" autocomplete="on">
+        <div id="regFields" class="hidden">
+          <label>Role
+            <select id="role">
+              <option value="user">I need a truck (Customer)</option>
+              <option value="driver">I own a truck (Driver)</option>
+            </select>
+          </label>
+          <label>Full name <input id="name" type="text"></label>
+          <label>Phone number <input id="phone" type="tel" placeholder="+2547XXXXXXXX"></label>
+        </div>
+        <label>Email <input id="email" type="email" required></label>
+        <label>Password <input id="password" type="password" minlength="6" required></label>
+        <button type="button" id="forgotLink" class="linkbtn small-link hidden"><i data-i="key"></i> Forgot password?</button>
+        <div id="driverFields" class="hidden">
+          <h3>Driver documents</h3>
+          <label>Truck type <select id="truckType"></select></label>
+          <label>Truck registration number <input id="truckReg" type="text" placeholder="KCA 123A"></label>
+          <label>ID (PDF) <input id="idPdf" type="file" accept="application/pdf"></label>
+          <label>Passport photo (PDF) <input id="passportPdf" type="file" accept="application/pdf"></label>
+          <label>Clear front photo of the truck showing the plate number
+            <input id="truckPhoto" type="file" accept="image/*"></label>
+        </div>
+        <p id="authError" class="error"></p>
+        <button id="authSubmit" class="btn primary" type="submit">Log in</button>
+      </form>
+
+      <div id="forgotPanel" class="hidden">
+        <p class="hint">Enter the email on your account and we'll send a 6-digit reset code.</p>
+        <div id="forgotStep1">
+          <label>Email <input id="forgotEmail" type="email"></label>
+          <p id="forgotError1" class="error"></p>
+          <button id="forgotSend" class="btn primary" type="button"><i data-i="mail"></i> Send reset code</button>
+        </div>
+        <div id="forgotStep2" class="hidden">
+          <label>6-digit code <input id="resetCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456"></label>
+          <label>New password <input id="resetPassword" type="password" minlength="6"></label>
+          <p id="forgotError2" class="error"></p>
+          <button id="resetSubmit" class="btn primary" type="button"><i data-i="lock"></i> Reset password</button>
+        </div>
+        <button id="forgotBack" class="linkbtn small-link"><i data-i="arrow-left"></i> Back to log in</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMER APP -->
+  <section id="userApp" class="app hidden">
+    <header class="topbar">
+      <div class="brand"><img class="logo small" src="assets/logo.png" alt=""> MyTruckMovers</div>
+      <nav class="navtabs">
+        <button class="navtab active" data-view="Home"><i data-i="home"></i><span>Home</span></button>
+        <button class="navtab" data-view="Map"><i data-i="map"></i><span>Request</span></button>
+        <button class="navtab" data-view="History"><i data-i="history"></i><span>Trips</span></button>
+      </nav>
+      <span id="userGreeting" class="who"></span>
+      <button class="btn small logout"><i data-i="log-out"></i> Log out</button>
+    </header>
+
+    <div class="view page" id="userHome">
+      <h1 id="userHello"></h1>
+      <div id="userActiveCard" class="card"></div>
+      <div class="stats">
+        <div class="stat"><i data-i="check"></i><b id="uStatDone">0</b><span>Trips completed</span></div>
+        <div class="stat"><i data-i="wallet"></i><b id="uStatSpent">0</b><span>Total spent</span></div>
+        <div class="stat"><i data-i="truck"></i><b id="uStatTrucks">0</b><span>Trucks near you</span></div>
+      </div>
+      <div class="tiles">
+        <button class="tile" data-view-go="Map"><i data-i="package"></i><b>Request a truck</b><span>Pin a destination and get a price</span></button>
+        <button class="tile" data-view-go="History"><i data-i="history"></i><b>Trip history</b><span>Your past and current requests</span></button>
+      </div>
+      <div class="card account-card">
+        <button id="userPwToggle" class="linkbtn"><i data-i="lock"></i> Change password <i data-i="chevron-down" class="chev"></i></button>
+        <div id="userPwForm" class="hidden pwform">
+          <label>Current password <input id="userPwCurrent" type="password"></label>
+          <label>New password <input id="userPwNew" type="password" minlength="6"></label>
+          <p id="userPwError" class="error"></p>
+          <button id="userPwSubmit" class="btn primary" type="button">Update password</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="view layout hidden" id="userMapView">
+      <aside class="panel">
+        <div id="requestForm">
+          <h2>Request a truck</h2>
+          <label>Truck size <select id="reqType"></select></label>
+          <label>What are you moving? <input id="reqItem" type="text" placeholder="e.g. 2-bedroom house items"></label>
+          <div class="pinrow">
+            <button id="pickPickup" class="btn pin"><i data-i="map-pin"></i> Set pickup</button>
+            <button id="pickDest" class="btn pin active"><i data-i="flag"></i> Set destination</button>
+          </div>
+          <p class="hint">Tap the map to drop the pin for the selected point.</p>
+          <div class="search"><input id="searchBox" type="text" placeholder="Search a place for the destination"><button id="searchBtn" class="btn small"><i data-i="search"></i></button></div>
+          <div id="pickupText" class="line">Pickup: not set</div>
+          <div id="destText" class="line">Destination: not set</div>
+          <div id="priceBox" class="price hidden"></div>
+          <button id="sendRequest" class="btn primary"><i data-i="send"></i> Send request</button>
+        </div>
+        <div id="activeCard" class="hidden">
+          <h2>Your request</h2>
+          <div id="statusBadge" class="badge"></div>
+          <p id="statusText"></p>
+          <div id="reqSummary" class="line"></div>
+          <div id="offers"></div>
+          <div id="driverBox" class="driverbox hidden"></div>
+          <div id="payBox" class="paybox hidden"></div>
+          <button id="cancelReq" class="btn danger"><i data-i="x"></i> Cancel request</button>
+          <button id="newReq" class="btn primary hidden"><i data-i="plus"></i> Make a new request</button>
+        </div>
+      </aside>
+      <div class="map-wrap"><div id="userMap" class="map"></div><div id="userNav" class="navbar hidden"></div></div>
+    </div>
+
+    <div class="view page hidden" id="userHistory"><h1>Trips</h1><div id="userHistoryList" class="list"></div></div>
+  </section>
+
+  <!-- DRIVER APP -->
+  <section id="driverApp" class="app hidden">
+    <header class="topbar">
+      <div class="brand"><img class="logo small" src="assets/logo.png" alt=""> MyTruckMovers</div>
+      <nav class="navtabs">
+        <button class="navtab active" data-view="Home"><i data-i="home"></i><span>Home</span></button>
+        <button class="navtab" data-view="Map"><i data-i="navigation"></i><span>Jobs</span></button>
+        <button class="navtab" data-view="History"><i data-i="history"></i><span>History</span></button>
+      </nav>
+      <span id="driverGreeting" class="who"></span>
+      <button class="btn small logout"><i data-i="log-out"></i> Log out</button>
+    </header>
+
+    <div class="view page" id="driverHome">
+      <h1 id="driverHello"></h1>
+      <div class="card">
+        <h2>My status</h2>
+        <div class="seg"><button class="avail-btn" data-v="offline"><i data-i="power"></i> Offline</button><button class="avail-btn" data-v="empty"><i data-i="truck"></i> Empty</button><button class="avail-btn" data-v="dropping_off"><i data-i="flag"></i> Dropping off soon</button></div>
+        <p class="hint">Go online so customers can see your truck and you can receive job alerts.</p>
+      </div>
+      <div id="driverJobCard" class="card"></div>
+      <div class="stats">
+        <div class="stat"><i data-i="check"></i><b id="dStatDone">0</b><span>Jobs completed</span></div>
+        <div class="stat"><i data-i="wallet"></i><b id="dStatEarn">0</b><span>Total earned</span></div>
+        <div class="stat"><i data-i="package"></i><b id="dStatOpen">0</b><span>Open requests</span></div>
+      </div>
+      <div class="tiles">
+        <button class="tile" data-view-go="Map"><i data-i="navigation"></i><b>Jobs and navigation</b><span>See requests on the map and follow the route</span></button>
+        <button class="tile" data-view-go="History"><i data-i="history"></i><b>Job history</b><span>Your completed jobs</span></button>
+      </div>
+      <div class="card account-card">
+        <button id="driverPwToggle" class="linkbtn"><i data-i="lock"></i> Change password <i data-i="chevron-down" class="chev"></i></button>
+        <div id="driverPwForm" class="hidden pwform">
+          <label>Current password <input id="driverPwCurrent" type="password"></label>
+          <label>New password <input id="driverPwNew" type="password" minlength="6"></label>
+          <p id="driverPwError" class="error"></p>
+          <button id="driverPwSubmit" class="btn primary" type="button">Update password</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="view layout hidden" id="driverMapView">
+      <aside class="panel">
+        <div class="seg"><button class="avail-btn" data-v="offline">Offline</button><button class="avail-btn" data-v="empty">Empty</button><button class="avail-btn" data-v="dropping_off">Dropping off</button></div>
+        <div class="line" id="locText">Location: waiting...</div>
+        <button id="manualLoc" class="btn small"><i data-i="crosshair"></i> Set my location on the map</button>
+
+        <div id="jobCard" class="hidden">
+          <h2>Current job</h2>
+          <div id="jobBadge" class="badge"></div>
+          <div id="jobBody"></div>
+          <a id="openMaps" class="btn ghost" target="_blank" rel="noopener"><i data-i="navigation"></i> Open in Google Maps</a>
+          <button id="pickedUp" class="btn primary hidden"><i data-i="package"></i> Item picked up</button>
+          <button id="delivered" class="btn primary hidden"><i data-i="check"></i> Delivered</button>
+          <p class="hint">Once accepted, only the customer can cancel this job.</p>
+        </div>
+
+        <div id="openWrap">
+          <h2>Open requests</h2>
+          <p class="hint">Requests far from you can still be applied for; the customer must approve.</p>
+          <div id="openList"></div>
+        </div>
+      </aside>
+      <div class="map-wrap"><div id="driverMap" class="map"></div><div id="driverNav" class="navbar hidden"></div></div>
+    </div>
+
+    <div class="view page hidden" id="driverHistory"><h1>Job history</h1><div id="driverHistoryList" class="list"></div></div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="icons.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "MyTruckMovers",
+    "slug": "mytruckmovers",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#1c2333",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1c2333"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.mytruckmovers.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "MyTruckMovers uses your location to find trucks and jobs near you.",
+        "NSCameraUsageDescription": "Used to photograph your truck for registration.",
+        "NSPhotoLibraryUsageDescription": "Used to choose your truck photo for registration."
+      }
+    },
+    "android": {
+      "package": "com.mytruckmovers.app",
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "CAMERA"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1c2333"
+      },
+      "config": { "googleMaps": { "apiKey": "YOUR_GOOGLE_MAPS_API_KEY_FOR_STANDALONE_BUILDS" } }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
