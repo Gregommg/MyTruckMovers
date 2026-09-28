@@ -175,3 +175,4 @@ Put Nginx or Caddy in front for HTTPS (required for GPS in the browser and for t
 - Switch `MPESA_ENV=production` and use your live shortcode/passkey once you're ready to take real payments.
 - Mobile location updates work while the app is open. Background tracking needs `expo-task-manager` and a dev build.
 - Web maps use free OpenStreetMap tiles and Nominatim search; for heavy traffic use a paid provider.
+# MyTruckMovers
