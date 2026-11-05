@@ -1,0 +1,8 @@
+**/node_modules
+mobile
+server/data
+server/trackmovers.db*
+server/uploads
+server/.env
+.git
+*.md
